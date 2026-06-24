@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KVA - Primer Liste</title>
+    <style>
+        body {
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Planirani letovi:</h1>
+    <ul id="list"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js"
+        integrity="sha512-h9644v03pHqrIHThkvXhB2PJ8zf5E9IyVnrSfZg8Yj8k4RsO4zldcQc4Bi9iVLUCCsqNY0b4WXVV4UB+wbWENA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const url = 'https://flight.pequla.com/api/flight/list?type=departure'
+        axios.get(url)
+            .then(rsp => {
+                const sorted = rsp.data.sort((f1, f2) => new Date(f1.scheduledAt) - new Date(f2.scheduledAt))
+                const list = document.getElementById('list')
+                
+                for (let f of sorted) {
+                    const li = document.createElement('li')
+                    li.innerHTML = `
+                    <h3>${f.destination}</h3>
+                    <ul>
+                        <li>ID: <strong>${f.id}</strong></li>
+                        <li>Broj Leta: <strong>${f.flightNumber}</strong></li>
+                        <li>Vreme: <strong>${new Date(f.scheduledAt).toLocaleString('sr-RS')}</strong></li>
+                    </ul>
+                    `
+                    list.appendChild(li)
+                }
+            })
+    </script>
+</body>
+
+</html>

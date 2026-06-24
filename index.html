@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KVA</title>
+    <style>
+        .green {
+            color: green;
+            font-weight: bold;
+        }
+
+        .yellow {
+            color: yellow;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Klijentske veb aplikacije</h3>
+    <p>Let za <span id="d">[d]</span> polece sa terminala <span id="t">[t]</span> u <span id="v">[v]</span></p>
+    <p id="id"></p>
+    <p id="kasni"></p>
+    <pre id="json"></pre>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js"
+        integrity="sha512-h9644v03pHqrIHThkvXhB2PJ8zf5E9IyVnrSfZg8Yj8k4RsO4zldcQc4Bi9iVLUCCsqNY0b4WXVV4UB+wbWENA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const pre = document.getElementById('json')
+        axios.get('https://flight.pequla.com/api/flight/248432')
+            .then(rsp => {
+                pre.innerText = JSON.stringify(rsp.data, null, 2)
+                document.getElementById('d').innerText = rsp.data.destination
+                document.getElementById('t').innerText = rsp.data.terminal
+                document.getElementById('v').innerText = new Date(rsp.data.scheduledAt).toLocaleString('sr-RS')
+                document.getElementById('id').innerText =
+                    `Model aviona ${rsp.data.plane} preko broja leta ${rsp.data.flightNumber} ima id ${rsp.data.id}`
+
+                const kasni = document.getElementById('kasni')
+                kasni.innerText = rsp.data.estimatedAt == null ? 'Na vreme' : 'Kasni'
+                kasni.className = rsp.data.estimatedAt == null ? 'green' : 'yellow'
+            })
+    </script>
+</body>
+
+</html>
